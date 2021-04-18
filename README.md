@@ -1,6 +1,6 @@
 # Rockelivery
 
-This Phoenix REST API application expose methods to manage users. Data is stored in a Postgres database.
+This Phoenix REST API application exposes methods to manage users. Data is stored in a Postgres database.
 
 This is [challenge #2](https://www.notion.so/Desafio-02-Testando-a-aplica-o-435756cc4daf4c9ba490c12642dc5154) of Rocketseat's Ignite Elixir module 4.
 
