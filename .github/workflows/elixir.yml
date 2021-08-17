@@ -57,7 +57,7 @@ jobs:
     
     - name: Run Codecov script
       run: bash <(curl -s https://codecov.io/bash)
-      end:
+      env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Install dependencies
