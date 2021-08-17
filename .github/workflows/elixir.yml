@@ -40,7 +40,7 @@ jobs:
         restore-keys: ${{ runner.os }}-mix-
 
     - name: Check formatting
-      run: mix format --check--formatted
+      run: mix format --check-formatted
     
     - name: Run Credo
       run: mix credo --strict
