@@ -1,7 +1,11 @@
 defmodule RockeliveryWeb.UsersControllerTest do
   use RockeliveryWeb.ConnCase, async: true
 
+  import Mox
   import Rockelivery.Factory
+
+  alias Rockelivery.ViaCep.ClientMock
+  alias RockeliveryWeb.Auth.Guardian
 
   setup do
     id = "8bc5419c-b47d-4de2-9024-8436444f4b51"
@@ -20,6 +24,10 @@ defmodule RockeliveryWeb.UsersControllerTest do
         "password" => "123456",
         "name" => "Maurício"
       }
+
+      expect(ClientMock, :get_cep_info, fn _cep ->
+        {:ok, build(:cep_info)}
+      end)
 
       response =
         conn
@@ -66,9 +74,9 @@ defmodule RockeliveryWeb.UsersControllerTest do
   end
 
   describe "delete/2" do
-    test "when the user exists, deletes the user", %{conn: conn, id: id} do
-      insert(:user, %{id: id})
+    setup :setup_authentication
 
+    test "when the user exists, deletes the user", %{conn: conn, id: id} do
       response =
         conn
         |> delete(Routes.users_path(conn, :delete, id))
@@ -92,9 +100,9 @@ defmodule RockeliveryWeb.UsersControllerTest do
   end
 
   describe "show/2" do
-    test "when the user id is found, returns the user", %{conn: conn, id: id} do
-      insert(:user, %{id: id})
+    setup :setup_authentication
 
+    test "when the user id is found, returns the user", %{conn: conn, id: id} do
       response =
         conn
         |> get(Routes.users_path(conn, :show, id))
@@ -113,7 +121,9 @@ defmodule RockeliveryWeb.UsersControllerTest do
              }
     end
 
-    test "when the user id is not found, returns an error", %{conn: conn, id: id} do
+    test "when the user id is not found, returns an error", %{conn: conn} do
+      id = "00000000-0000-0000-0000-000000000000"
+
       response =
         conn
         |> get(Routes.users_path(conn, :show, id))
@@ -124,13 +134,13 @@ defmodule RockeliveryWeb.UsersControllerTest do
   end
 
   describe "update/2" do
+    setup :setup_authentication
+
     test "when the user id is found and the parameters are valid, update the user", %{
       conn: conn,
       id: id
     } do
       params = %{id: id, name: "João"}
-
-      insert(:user, %{id: id})
 
       response =
         conn
@@ -150,8 +160,9 @@ defmodule RockeliveryWeb.UsersControllerTest do
              }
     end
 
-    test "when the user is not found, returns an error", %{conn: conn, id: id} do
-      params = %{id: id, name: "João"}
+    test "when the user is not found, returns an error", %{conn: conn} do
+      id = "00000000-0000-0000-0000-000000000000"
+      params = %{name: "João"}
 
       response =
         conn
@@ -164,8 +175,6 @@ defmodule RockeliveryWeb.UsersControllerTest do
     test "when there are invalid parameters, returns the errors", %{conn: conn, id: id} do
       params = %{id: id, age: 10, cpf: ""}
 
-      insert(:user, %{id: id})
-
       response =
         conn
         |> put(Routes.users_path(conn, :update, id, params))
@@ -173,10 +182,20 @@ defmodule RockeliveryWeb.UsersControllerTest do
 
       assert response == %{
                "message" => %{
-                 "age" => ["must be greater than or equal to %18"],
+                 "age" => ["must be greater than or equal to 18"],
                  "cpf" => ["can't be blank"]
                }
              }
     end
+  end
+
+  defp setup_authentication(%{conn: conn, id: id}) do
+    user = insert(:user, %{id: id})
+
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+    conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+    {:ok, conn: conn, id: id}
   end
 end

@@ -22,7 +22,7 @@ defmodule RockeliveryWeb.Plugs.UUIDChecker do
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(:bad_request, body)
-    # para a conexão e não manda para o controller
+    # para a conexão e não continua fluxo para o controller
     |> halt()
   end
 end

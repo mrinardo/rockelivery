@@ -10,8 +10,9 @@ defmodule RockeliveryWeb.UsersViewTest do
   # não tem describe pq a view só tem a render
   test "renders create.json" do
     user = build(:user)
+    token = "TESTTOKEN"
 
-    response = render(UsersView, "create.json", user: user)
+    response = render(UsersView, "create.json", token: token, user: user)
 
     assert %{
              message: "User created!",
@@ -27,7 +28,8 @@ defmodule RockeliveryWeb.UsersViewTest do
                password: "123456",
                password_hash: nil,
                updated_at: nil
-             }
+             },
+             token: "TESTTOKEN"
            } ==
              response
   end
