@@ -49,11 +49,6 @@ jobs:
       run: mix coveralls.json
       env:
         MIX_ENV: test
-
-    - name: Run Codecov script
-      run: mix coveralls.json
-      env:
-        MIX_ENV: test
     
     - name: Run Codecov script
       run: bash <(curl -s https://codecov.io/bash)

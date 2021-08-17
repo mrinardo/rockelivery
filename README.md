@@ -1,5 +1,7 @@
 # Rockelivery
 
+[![codecov](https://codecov.io/gh/mrinardo/rockelivery/branch/main/graph/badge.svg?token=18IECSGHNO)](https://codecov.io/gh/mrinardo/rockelivery)
+
 This sample Phoenix REST API application is food delivery API. Authentication is made with JWT tokens and the data is stored in a Postgres database.
 
 This is [final challenge](https://www.notion.so/Desafio-Final-75f559ba068348fcb582f45e3e4e5455) of Rocketseat's Ignite Elixir.
