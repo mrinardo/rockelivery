@@ -136,7 +136,7 @@ Status: 200 OK
 
 ## Signin
 
-```POS /users/signin```
+```POST /users/signin```
 
 ### Request
 
